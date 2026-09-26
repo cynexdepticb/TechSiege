@@ -1,8 +1,15 @@
-// ─── AGENTX 2026 · single source of truth ─────────────────────────────
+// ─── TechSiege · single source of truth ─────────────────────────────
 // Edit dates, links, tracks, schedule, judging, sponsors here — no layout changes needed.
-// EVENT NAME: set NEXT_PUBLIC_EVENT_NAME in frontend/.env (see .env.example).
+// EVENT NAME: set NEXT_PUBLIC_EVENT_NAME in .env (see .env.example).
 // Changing it only requires a rebuild — no code edits.
-const EVENT_NAME = (process.env.NEXT_PUBLIC_EVENT_NAME ?? "").trim() || "AGENTX 2026";
+import { TRACKS as CANONICAL_TRACKS, type TrackId } from "./tracks";
+
+const TRACK_TITLES = Object.fromEntries(CANONICAL_TRACKS.map((t) => [t.id, t.title])) as Record<
+  TrackId,
+  string
+>;
+
+const EVENT_NAME = (process.env.NEXT_PUBLIC_EVENT_NAME ?? "").trim() || "TechSiege";
 const EVENT_START_ISO = "2026-10-30T08:00:00+05:30";
 
 export const SITE = {
@@ -17,13 +24,13 @@ export const SITE = {
   city: "Mangaluru, Karnataka",
   participants: "200+",
   teams: "50+",
-  // Internal registration page (POSTs to backendApiBaseUrl). External form URLs below.
+  // Internal registration page, served by this app's own POST /api/register.
+  // External form URLs below.
   registrationUrl: "/register",
-  sponsorFormUrl: "https://forms.example.com/agentx2026-sponsor",
-  mentorFormUrl: "https://forms.example.com/agentx2026-mentor",
-  backendApiBaseUrl: "http://localhost:4000",
+  sponsorFormUrl: "https://forms.example.com/techsiege-sponsor",
+  mentorFormUrl: "https://forms.example.com/techsiege-mentor",
   contactEmail: "cynex.depticb@gmail.com",
-  sponsorEmail: "sponsors@agentx2026.in",
+  sponsorEmail: "sponsors@techsiege.in",
   college: "Alva's Institute of Engineering & Technology",
   collegeShort: "AIET · Mijar, Moodbidri",
 };
@@ -45,46 +52,58 @@ export const STATS = [
   { value: "24 hrs", label: "Offline Build", sub: "Mangaluru campus venue" },
 ];
 
-export type Track = { id: string; title: string; desc: string; examples: string[] };
+export type Track = { id: TrackId; title: string; desc: string; examples: string[] };
 
-export const TRACKS: Track[] = [
+// Titles come from lib/tracks.ts so the site and the API cannot disagree about
+// which tracks exist. Only the presentation copy lives here.
+export const TRACKS = [
   {
     id: "autonomous",
-    title: "Autonomous AI",
+    title: TRACK_TITLES.autonomous,
     desc: "Agents that plan, act and finish work end-to-end.",
     examples: ["Research agents", "Productivity copilots", "Enterprise workflow automation"],
   },
   {
     id: "education",
-    title: "AI for Education",
+    title: TRACK_TITLES.education,
     desc: "Tutors and tools that actually teach and administer.",
     examples: ["Personalized tutors", "Assessment graders", "Teacher admin assistants"],
   },
   {
     id: "healthcare",
-    title: "AI for Healthcare",
+    title: TRACK_TITLES.healthcare,
     desc: "Information & workflow assistants for care teams.",
     examples: ["Triage intake agents", "Literature research", "Discharge-summary helpers"],
   },
   {
     id: "finance",
-    title: "AI for Finance",
+    title: TRACK_TITLES.finance,
     desc: "Agents that read numbers and explain what matters.",
     examples: ["Financial research", "Expense analysis", "Business-intelligence bots"],
   },
   {
     id: "social",
-    title: "AI for Social Impact",
+    title: TRACK_TITLES.social,
     desc: "Accessibility, public-service and planet-first agents.",
     examples: ["Accessibility aides", "Civic-service bots", "Environmental monitors"],
   },
   {
     id: "devagents",
-    title: "AI Developer Agents",
+    title: TRACK_TITLES.devagents,
     desc: "Agents that ship software alongside you.",
     examples: ["Code + test generation", "Auto-documentation", "DevOps & code review"],
   },
-];
+] satisfies Track[];
+
+/**
+ * Compile-time guard: every canonical track id must appear above exactly once.
+ * Adding a track to lib/tracks.ts and forgetting it here fails the build instead
+ * of silently dropping it from the page.
+ */
+type MissingTrack = Exclude<TrackId, (typeof TRACKS)[number]["id"]>;
+const _everyTrackIsShown: MissingTrack extends never ? true : ["missing from TRACKS:", MissingTrack] = true;
+void _everyTrackIsShown;
+
 
 export const REQUIREMENTS = [
   { title: "Tool / API integration", desc: "Agent calls real tools, APIs or data sources — not just chat replies." },

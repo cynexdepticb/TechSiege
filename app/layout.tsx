@@ -9,7 +9,7 @@ const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap
 export const metadata: Metadata = {
   title: `${SITE.name} — Build. Automate. Act. | 24-Hour AI Agent Hackathon, Mangaluru`,
   description: `${SITE.name} is a 24-hour offline AI-agent hackathon in Mangaluru. 200+ builders, 50+ teams, 6 tracks. Build real agentic AI systems — not chatbot wrappers.`,
-  metadataBase: new URL("https://agentx2026.example.com"),
+  metadataBase: new URL("https://techsiege.example.com"),
   openGraph: {
     title: `${SITE.name} — Build. Automate. Act.`,
     description: "24-hour offline AI-agent hackathon · Mangaluru · 200+ participants · 6 tracks",

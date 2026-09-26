@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react";
-import { SITE, TRACKS } from "@/lib/content";
-
-const API = process.env.NEXT_PUBLIC_API_BASE ?? SITE.backendApiBaseUrl;
+import { TRACKS } from "@/lib/content";
 
 type Member = { fullName: string; email: string; phone: string; branchYear: string };
 const emptyMember = (): Member => ({ fullName: "", email: "", phone: "", branchYear: "" });
@@ -11,7 +9,7 @@ export default function RegisterForm() {
   const [teamName, setTeamName] = useState("");
   const [institution, setInstitution] = useState("");
   const [city, setCity] = useState("");
-  const [trackId, setTrackId] = useState(TRACKS[0].id);
+  const [trackId, setTrackId] = useState<string>(TRACKS[0].id);
   const [projectIdea, setProjectIdea] = useState("");
   const [members, setMembers] = useState<Member[]>([emptyMember(), emptyMember()]);
   const [agree, setAgree] = useState(false);
@@ -24,7 +22,7 @@ export default function RegisterForm() {
     e.preventDefault();
     setStatus({ type: "loading" });
     try {
-      const res = await fetch(`${API}/api/register`, {
+      const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ teamName, institution, city, trackId, projectIdea, members, agreeRules: agree }),

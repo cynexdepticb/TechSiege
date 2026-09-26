@@ -2,9 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Download, SignOut, ChartBar, UsersThree, Buildings, ArrowClockwise } from "@phosphor-icons/react";
-import { SITE } from "@/lib/content";
 
-const API = process.env.NEXT_PUBLIC_API_BASE ?? SITE.backendApiBaseUrl;
 const KEY = "cynex_admin_token";
 
 type Stats = {
@@ -62,7 +60,7 @@ export default function AdminDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API}/api/admin/stats`, { headers: { Authorization: `Bearer ${t}` } });
+      const res = await fetch("/api/admin/stats", { headers: { Authorization: `Bearer ${t}` } });
       const data = await res.json();
       if (!res.ok || !data.ok) {
         setStats(null);
@@ -87,7 +85,7 @@ export default function AdminDashboard() {
 
   async function downloadCsv() {
     if (!token) return;
-    const res = await fetch(`${API}/api/admin/registrations.csv`, { headers: { Authorization: `Bearer ${token}` } });
+    const res = await fetch("/api/admin/registrations.csv", { headers: { Authorization: `Bearer ${token}` } });
     if (!res.ok) {
       setError("Export failed.");
       return;
@@ -138,7 +136,7 @@ export default function AdminDashboard() {
             {loading ? "Checking…" : "Unlock dashboard"}
           </button>
         </form>
-        <p className="mt-4 text-xs text-muted">Token lives in this browser tab only and is never bundled into the site. Find it in <code className="text-slate-300">backend/.env</code> as <code className="text-slate-300">ADMIN_TOKEN</code>.</p>
+        <p className="mt-4 text-xs text-muted">Token lives in this browser tab only and is never bundled into the site. Find it in <code className="text-slate-300">.env.local</code> as <code className="text-slate-300">ADMIN_TOKEN</code>.</p>
       </div>
     );
   }
