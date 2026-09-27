@@ -13,6 +13,6 @@ export const GET = route(async () => {
   const pool = getPool();
   if (!pool) return ok({ teams: 0, maxTeams: MAX_TEAMS, configured: false });
 
-  const { rows } = await pool.query("SELECT COUNT(*)::int AS n FROM teams");
+  const { rows } = await pool.query("SELECT COUNT(*)::int AS n FROM public.teams");
   return ok({ teams: rows[0]!.n, maxTeams: MAX_TEAMS, configured: true });
 });

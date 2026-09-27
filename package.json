@@ -10,20 +10,26 @@
     "typecheck": "tsc --noEmit",
     "db:migrate": "tsx scripts/migrate.ts",
     "seed:demo": "tsx scripts/seedDemo.ts",
-    "seed:clear": "tsx scripts/seedDemo.ts clear"
+    "seed:clear": "tsx scripts/seedDemo.ts clear",
+    "test:workflow": "tsx scripts/test-pdf-workflow.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
     "framer-motion": "^11.11.0",
     "next": "14.2.13",
+    "nodemailer": "^10.0.11",
+    "pdf-lib": "^1.17.1",
     "pg": "^8.23.0",
+    "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.16.0",
+    "@types/nodemailer": "^8.0.2",
     "@types/pg": "^8.23.1",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",

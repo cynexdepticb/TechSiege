@@ -6,11 +6,15 @@ import { route } from "@/lib/server/http";
 export const dynamic = "force-dynamic";
 
 const CSV_COLUMNS = [
+  "team_code",
   "team_name",
   "institution",
   "city",
   "track",
   "project_idea",
+  "registration_status",
+  "payment_status",
+  "payment_reference",
   "registered_at",
   "role",
   "full_name",
@@ -34,20 +38,25 @@ export const GET = route(async (req) => {
   const pool = requirePool();
 
   const { rows } = await pool.query(
-    `SELECT t.team_name, t.institution, t.city, t.track_id, t.project_idea, t.created_at,
+    `SELECT t.team_code, t.team_name, t.institution, t.city, t.track_id, t.project_idea,
+            t.registration_status, t.payment_status, t.payment_reference, t.created_at,
             m.is_lead, m.full_name, m.email, m.phone, m.branch_year
-     FROM teams t LEFT JOIN members m ON m.team_id = t.id
+     FROM public.teams t LEFT JOIN public.members m ON m.team_id = t.id
      ORDER BY t.created_at, m.is_lead DESC`,
   );
 
   const body = rows
     .map((r) =>
       [
+        r.team_code,
         r.team_name,
         r.institution,
         r.city,
         TRACK_LABELS[r.track_id as TrackId] ?? r.track_id,
         r.project_idea,
+        r.registration_status,
+        r.payment_status,
+        r.payment_reference,
         r.created_at,
         r.is_lead ? "lead" : "member",
         r.full_name,

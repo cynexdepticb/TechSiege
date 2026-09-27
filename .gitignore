@@ -4,3 +4,5 @@ out/
 .env
 .env*.local
 *.tsbuildinfo
+# Payment screenshots (private, served only via admin-authenticated route).
+data/payments/

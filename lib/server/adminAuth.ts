@@ -1,4 +1,4 @@
-import { timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { HttpError } from "./errors";
 
 /**
@@ -25,4 +25,15 @@ export async function requireAdmin(req: Request): Promise<void> {
   if (!valid) {
     throw new HttpError(401, "Invalid access token.");
   }
+}
+
+/**
+ * Short non-secret fingerprint of the bearer token, for audit trails
+ * (payment decisions record who acted, without storing the token itself).
+ */
+export function adminIdentity(req: Request): string {
+  const header = req.headers.get("authorization") ?? "";
+  const token = header.startsWith("Bearer ") ? header.slice(7).trim() : "unknown";
+  const fp = createHash("sha256").update(token).digest("hex").slice(0, 8);
+  return `admin:${fp}`;
 }

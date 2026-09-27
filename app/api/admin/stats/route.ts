@@ -13,30 +13,30 @@ export const GET = route(async (req) => {
   const [totals, last24h, byTrack, byInstitution, byCity, byDay, bySize, recent] = await Promise.all([
     pool.query(
       `SELECT
-         (SELECT COUNT(*)::int FROM teams)  AS teams,
-         (SELECT COUNT(*)::int FROM members) AS members,
-         (SELECT COUNT(DISTINCT institution)::int FROM teams) AS institutions,
-         (SELECT COUNT(DISTINCT lower(email))::int FROM members) AS unique_emails,
-         (SELECT COUNT(*)::int FROM members WHERE created_at > now() - interval '24 hours') AS members_last_24h`,
+         (SELECT COUNT(*)::int FROM public.teams)  AS teams,
+         (SELECT COUNT(*)::int FROM public.members) AS members,
+         (SELECT COUNT(DISTINCT institution)::int FROM public.teams) AS institutions,
+         (SELECT COUNT(DISTINCT lower(email))::int FROM public.members) AS unique_emails,
+         (SELECT COUNT(*)::int FROM public.members WHERE created_at > now() - interval '24 hours') AS members_last_24h`,
     ),
-    pool.query(`SELECT COUNT(*)::int AS n FROM teams WHERE created_at > now() - interval '24 hours'`),
-    pool.query(`SELECT track_id, COUNT(*)::int AS n FROM teams GROUP BY track_id ORDER BY n DESC`),
+    pool.query(`SELECT COUNT(*)::int AS n FROM public.teams WHERE created_at > now() - interval '24 hours'`),
+    pool.query(`SELECT track_id, COUNT(*)::int AS n FROM public.teams GROUP BY track_id ORDER BY n DESC`),
     pool.query(
-      `SELECT institution, COUNT(*)::int AS n FROM teams GROUP BY institution ORDER BY n DESC, institution LIMIT 10`,
+      `SELECT institution, COUNT(*)::int AS n FROM public.teams GROUP BY institution ORDER BY n DESC, institution LIMIT 10`,
     ),
     pool.query(
-      `SELECT COALESCE(NULLIF(city,''),'Unknown') AS city, COUNT(*)::int AS n FROM teams GROUP BY 1 ORDER BY n DESC LIMIT 10`,
+      `SELECT COALESCE(NULLIF(city,''),'Unknown') AS city, COUNT(*)::int AS n FROM public.teams GROUP BY 1 ORDER BY n DESC LIMIT 10`,
     ),
     pool.query(
       `SELECT to_char(date_trunc('day', created_at), 'Mon DD') AS day,
               to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS iso,
               COUNT(*)::int AS n
-       FROM teams GROUP BY 1, 2 ORDER BY 2`,
+       FROM public.teams GROUP BY 1, 2 ORDER BY 2`,
     ),
     pool.query(
       `SELECT team_size, COUNT(*)::int AS n FROM (
          SELECT t.id, COUNT(m.id)::int AS team_size
-         FROM teams t LEFT JOIN members m ON m.team_id = t.id
+         FROM public.teams t LEFT JOIN public.members m ON m.team_id = t.id
          GROUP BY t.id
        ) s GROUP BY team_size ORDER BY team_size`,
     ),
@@ -47,7 +47,7 @@ export const GET = route(async (req) => {
               MAX(m.full_name) FILTER (WHERE m.is_lead) AS lead_name,
               MAX(m.email)    FILTER (WHERE m.is_lead) AS lead_email,
               MAX(m.phone)    FILTER (WHERE m.is_lead) AS lead_phone
-       FROM teams t LEFT JOIN members m ON m.team_id = t.id
+       FROM public.teams t LEFT JOIN public.members m ON m.team_id = t.id
        GROUP BY t.id
        ORDER BY t.created_at DESC
        LIMIT 15`,

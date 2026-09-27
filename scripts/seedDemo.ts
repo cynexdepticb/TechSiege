@@ -58,8 +58,9 @@ async function main() {
       const college = COLLEGES[i % COLLEGES.length]!;
 
       const team = await pool.query(
-        `INSERT INTO teams (team_name, institution, city, track_id, project_idea, created_at)
-         VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+        `INSERT INTO teams (team_name, institution, city, track_id, project_idea, created_at,
+                            team_code, registration_status, payment_status, submitted_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,'PAYMENT_PENDING','PENDING',$6) RETURNING id`,
         [
           `[demo] Team ${i + 1}`,
           college,
@@ -67,6 +68,7 @@ async function main() {
           TRACK_IDS[i % TRACK_IDS.length],
           IDEAS[i % IDEAS.length],
           created,
+          `[demo]-${i + 1}`,
         ],
       );
 

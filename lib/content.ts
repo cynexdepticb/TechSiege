@@ -35,8 +35,7 @@ export const SITE = {
   collegeShort: "AIET · Mijar, Moodbidri",
 };
 
-export const NAV_LINKS = [
-  { label: "About", href: "#about" },
+export const NAV_LINKS = [  { label: "About", href: "#about" },
   { label: "Tracks", href: "#tracks" },
   { label: "Schedule", href: "#schedule" },
   { label: "Judging", href: "#judging" },
@@ -187,6 +186,16 @@ export const SPONSOR_TIERS = [
   { name: "Technology Partner", range: "Credits / Infra", perks: ["API credits, cloud, tooling", "Workshop slot", "Logo in dev resources"] },
   { name: "Prize / In-Kind", range: "Goodies / Prizes", perks: ["Swag, gadgets, subscriptions", "Logo on prize wall"] },
 ];
+
+export const PAYMENT = {
+  // Displayed on /register next to the QR. Set the real values in .env:
+  //   PAYMENT_QR_IMAGE=/payment-qr.png  PAYMENT_AMOUNT=₹600 per team  PAYMENT_UPI=karthikkarthik98947@okhdfcbank
+  // The official QR file lives at public/payment-qr.png (QR only, cropped).
+  qrImage: process.env.NEXT_PUBLIC_PAYMENT_QR_IMAGE?.trim() || "/payment-qr.png",
+  amount: process.env.NEXT_PUBLIC_PAYMENT_AMOUNT?.trim() || "₹600 per team",
+  upiId: process.env.NEXT_PUBLIC_PAYMENT_UPI?.trim() || "karthikkarthik98947@okhdfcbank",
+  payee: process.env.NEXT_PUBLIC_PAYMENT_PAYEE?.trim() || "Karthik Gowda P",
+};
 
 export const FAQS = [
   {

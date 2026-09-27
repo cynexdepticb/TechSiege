@@ -15,6 +15,8 @@ export const registerSchema = z
     city: z.string().trim().max(100).optional().default(""),
     trackId: z.enum(TRACK_IDS),
     projectIdea: z.string().trim().max(1000).optional().default(""),
+    // UPI / bank reference the payer saw (optional — screenshot is the proof).
+    paymentReference: z.string().trim().max(120).optional().default(""),
     members: z
       .array(memberSchema)
       .min(2, "Teams need 2–4 members")
